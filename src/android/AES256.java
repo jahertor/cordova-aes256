@@ -58,10 +58,12 @@ public class AES256 extends CordovaPlugin {
                             callbackContext.success(decrypt(secureKey, value, iv));
                         } else if (GENERATE_SECURE_KEY.equalsIgnoreCase(action)) {
                             String password = args.getString(0);
-                            callbackContext.success(generateSecureKey(password));
+                            String salt = args.getString(1);
+                            callbackContext.success(generateSecureKey(password, salt));
                         } else if (GENERATE_SECURE_IV.equalsIgnoreCase(action)) {
                             String password = args.getString(0);
-                            callbackContext.success(generateSecureIV(password));
+                            String salt = args.getString(1);
+                            callbackContext.success(generateSecureIV(password, salt));
                         } else {
                             callbackContext.error("Invalid method call");
                         }
@@ -158,8 +160,14 @@ public class AES256 extends CordovaPlugin {
      * @return SecureKey
      * @throws Exception
      */
-    private static String generateSecureKey(String password) throws Exception {
-        byte[] secureKeyInBytes = generatePBKDF2(password.toCharArray(), generateRandomSalt(),
+    private static String generateSecureKey(String password, String salt) throws Exception {
+        byte[] saltBytes;
+        if (salt == null) {
+            saltBytes = generateRandomSalt();
+        } else {
+            saltBytes = Hex.decodeHex(salt);
+        }
+        byte[] secureKeyInBytes = generatePBKDF2(password.toCharArray(), saltBytes,
                 PBKDF2_ITERATION_COUNT, SECURE_KEY_LENGTH);
         return Hex.encodeHexString(secureKeyInBytes);
     }
@@ -173,8 +181,14 @@ public class AES256 extends CordovaPlugin {
      * @return SecureIV
      * @throws Exception
      */
-    private static String generateSecureIV(String password) throws Exception {
-        byte[] secureIVInBytes = generatePBKDF2(password.toCharArray(), generateRandomSalt(),
+    private static String generateSecureIV(String password, String salt) throws Exception {
+        byte[] saltBytes;
+        if (salt == null) {
+            saltBytes = generateRandomSalt();
+        } else {
+            saltBytes = Hex.decodeHex(salt);
+        }
+        byte[] secureIVInBytes = generatePBKDF2(password.toCharArray(), saltBytes,
                 PBKDF2_ITERATION_COUNT, SECURE_IV_LENGTH);
         return Hex.encodeHexString(secureIVInBytes);
     }

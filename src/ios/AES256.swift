@@ -51,7 +51,8 @@
             messageAs: "Error occurred while generating secure key"
         )
         let password = command.arguments[0] as? String ?? ""
-        let secureKey:String? = PBKDF2.pbkdf2(hash:CCPBKDFAlgorithm(kCCPRFHmacAlgSHA1), password:password, salt:AES256CBC.generateSalt(), keyByteCount:AES256.SECURE_KEY_LENGTH, rounds:AES256.PBKDF2_ITERATION_COUNT)
+        let salt = command.arguments[1] as? String ?? AES256CBC.generateSalt()
+        let secureKey:String? = PBKDF2.pbkdf2(hash:CCPBKDFAlgorithm(kCCPRFHmacAlgSHA1), password:password, salt:salt, keyByteCount:AES256.SECURE_KEY_LENGTH, rounds:AES256.PBKDF2_ITERATION_COUNT)
         pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: secureKey)
         self.commandDelegate!.send(
             pluginResult,
@@ -68,7 +69,8 @@
             messageAs: "Error occurred while generating secure IV"
         )
         let password = command.arguments[0] as? String ?? ""
-        let secureIV:String? = PBKDF2.pbkdf2(hash:CCPBKDFAlgorithm(kCCPRFHmacAlgSHA1), password:password, salt:AES256CBC.generateSalt(), keyByteCount:AES256.SECURE_IV_LENGTH, rounds:AES256.PBKDF2_ITERATION_COUNT)
+        let salt = command.arguments[1] as? String ?? AES256CBC.generateSalt()
+        let secureIV:String? = PBKDF2.pbkdf2(hash:CCPBKDFAlgorithm(kCCPRFHmacAlgSHA1), password:password, salt:salt, keyByteCount:AES256.SECURE_IV_LENGTH, rounds:AES256.PBKDF2_ITERATION_COUNT)
         pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: secureIV)
         self.commandDelegate!.send(
             pluginResult,

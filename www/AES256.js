@@ -18,12 +18,12 @@ AES256.prototype.decrypt = function (secureKey, iv, value, success, error) {
     }
 };
 
-AES256.prototype.generateSecureKey = function (password, success, error) {
-    exec(success, error, 'AES256', 'generateSecureKey', [password]);
+AES256.prototype.generateSecureKey = function (password, salt, success, error) {
+    exec(success, error, 'AES256', 'generateSecureKey', [password, salt]);
 };
 
-AES256.prototype.generateSecureIV = function (password, success, error) {
-    exec(success, error, 'AES256', 'generateSecureIV', [password]);
+AES256.prototype.generateSecureIV = function (password, salt, success, error) {
+    exec(success, error, 'AES256', 'generateSecureIV', [password, salt]);
 };
 
 var aES256 = new AES256();
